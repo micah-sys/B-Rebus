@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bible Rebus Challenge</title>
+<style>
+:root{--navy:#172554;--blue:#2563eb;--gold:#fbbf24;--coral:#fb7185;--ink:#172033;--paper:#fffdf7}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;color:var(--ink);background:radial-gradient(circle at 10% 10%,#dbeafe 0 12%,transparent 30%),radial-gradient(circle at 90% 20%,#fce7f3 0 10%,transparent 28%),linear-gradient(135deg,#fef3c7,#f8fafc 55%,#dbeafe)}
+button,input{font:inherit}.app{width:min(1080px,94vw);margin:28px auto}.brand{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.logo{font-weight:900;font-size:clamp(1.3rem,3vw,2rem);color:var(--navy);letter-spacing:-1px}.logo span{color:#e8792e}.tag{background:#fff;border:1px solid #e2e8f0;border-radius:999px;padding:8px 13px;font-size:.82rem;font-weight:700}
+.panel{background:#ffffffed;border:1px solid #ffffff;border-radius:28px;box-shadow:0 20px 55px #1e293b1a;padding:clamp(20px,4vw,42px)}
+h1,h2,p{margin-top:0}h1{font-size:clamp(2rem,5vw,3.7rem);line-height:1.02;color:var(--navy);letter-spacing:-2px;margin-bottom:12px}h2{color:var(--navy)}.lead{color:#64748b;max-width:650px;line-height:1.6}
+.setup-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:26px 0}.field{display:flex;flex-direction:column;gap:8px;font-weight:800;color:#334155}.field input{width:100%;padding:14px 15px;border:2px solid #e2e8f0;border-radius:14px;background:#fff;outline:none}.field input:focus{border-color:var(--blue);box-shadow:0 0 0 4px #2563eb18}.full{grid-column:1/-1}.hint{font-size:.85rem;color:#64748b;font-weight:500}
+.primary,.secondary{border:0;border-radius:14px;padding:13px 20px;font-weight:900;cursor:pointer;transition:.18s transform,.18s filter}.primary{background:linear-gradient(100deg,#2563eb,#7c3aed);color:white;box-shadow:0 9px 20px #4f46e533}.secondary{background:#e2e8f0;color:#1e293b}.primary:hover,.secondary:hover{transform:translateY(-2px);filter:brightness(1.04)}button:focus-visible{outline:4px solid #fbbf24;outline-offset:3px}
+.setup-foot{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.feature-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:22px}.feature{background:#f1f5f9;color:#475569;padding:8px 12px;border-radius:999px;font-size:.82rem;font-weight:700}
+.hidden{display:none!important}.game-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px}.scoreline{display:flex;gap:8px;flex-wrap:wrap}.team-chip{padding:9px 13px;border-radius:12px;background:#eff6ff;color:#1d4ed8;font-weight:900}.team-chip.active{background:#172554;color:#fff}.timer{font-variant-numeric:tabular-nums;font-weight:1000;font-size:1.3rem;color:#be123c;background:#fff1f2;padding:9px 14px;border-radius:12px;min-width:92px;text-align:center}
+.stage{min-height:390px;border:3px solid #172554;border-radius:22px;background:var(--paper);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:clamp(18px,4vw,38px);position:relative;overflow:hidden}
+.stage:before,.stage:after{content:"✦";position:absolute;color:#fbbf24;font-size:2.3rem;opacity:.7}.stage:before{top:18px;left:22px}.stage:after{right:22px;bottom:18px}
+.round-label{font-size:.85rem;text-transform:uppercase;letter-spacing:2px;font-weight:1000;color:#64748b}.team-title{font-size:clamp(1.4rem,3vw,2.2rem);font-weight:1000;color:var(--navy);margin:10px 0 20px}
+.puzzle{display:flex;align-items:center;justify-content:center;gap:clamp(12px,3vw,28px);flex-wrap:wrap;max-width:100%}.clue{min-width:105px;min-height:120px;padding:14px 17px;border:2px solid #e2e8f0;border-radius:18px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;box-shadow:0 8px 18px #0f172a0c}.clue .symbol{font-size:clamp(2.6rem,7vw,4.7rem);line-height:1}.clue .fragment{font-size:clamp(1.3rem,3vw,2rem);font-weight:1000;color:#1e40af;letter-spacing:1px}.clue small{font-weight:800;color:#64748b}.plus{font-size:2rem;font-weight:1000;color:#f59e0b}
+.answer-hint{margin-top:22px;color:#64748b;font-weight:700}.game-controls{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:18px}.controls-right{display:flex;gap:10px;flex-wrap:wrap}.progress{height:9px;background:#e2e8f0;border-radius:99px;overflow:hidden;margin-top:18px}.progress>div{height:100%;width:100%;background:linear-gradient(90deg,#f59e0b,#ec4899,#6366f1);transform-origin:left}
+.intro-mark{font-size:clamp(4rem,12vw,7rem);margin:12px}.intro-title{font-size:clamp(2rem,5vw,3.5rem);font-weight:1000;color:var(--navy)}.intro-sub{color:#64748b;font-size:1.1rem}.end-screen{text-align:center}.end-screen .intro-mark{font-size:5rem}
+@media(max-width:650px){.setup-grid{grid-template-columns:1fr}.full{grid-column:auto}.stage{min-height:340px}.brand{align-items:flex-start}.tag{font-size:.72rem}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="brand"><div class="logo">✦ BIBLE <span>REBUS</span> CHALLENGE</div><div class="tag">THINK • GUESS • PLAY</div></header>
+
+  <section class="panel" id="setup">
+    <h1>Ready to play<br>the Bible Rebus?</h1>
+    <p class="lead">Two teams. Picture clues. Bible names, places, animals and objects. Set your teams and the time for each turn, then let the challenge begin!</p>
+    <div class="setup-grid">
+      <label class="field">Team 1 name<input id="team1" maxlength="24" placeholder="e.g. The Good Samaritans" value="Team 1"></label>
+      <label class="field">Team 2 name<input id="team2" maxlength="24" placeholder="e.g. The Bible Heroes" value="Team 2"></label>
+      <label class="field full">Time for each slide
+        <input id="seconds" type="number" min="5" max="300" value="20">
+        <span class="hint">Choose between 5 and 300 seconds. The timer starts again on every team turn.</span>
+      </label>
+    </div>
+    <div class="setup-foot"><span class="hint">Keyboard: press Q anytime during the game to quit.</span><button class="primary" id="startBtn">START GAME →</button></div>
+    <div class="feature-row"><span class="feature">✦ Random puzzle order</span><span class="feature">⏱ Countdown timer</span><span class="feature">⌨ Q to quit</span><span class="feature">🔁 Keep playing</span></div>
+  </section>
+
+  <section class="panel hidden" id="game">
+    <div class="game-head">
+      <div class="scoreline"><span class="team-chip" id="chip1">Team 1</span><span class="team-chip" id="chip2">Team 2</span></div>
+      <div class="timer" id="timer">00:20</div>
+    </div>
+    <div class="stage" id="stage" aria-live="polite"></div>
+    <div class="progress"><div id="progressBar"></div></div>
+    <div class="game-controls">
+      <span class="hint" id="turnInfo">Get ready!</span>
+      <div class="controls-right"><button class="secondary" id="restartBtn">Restart</button><button class="primary" id="continueBtn">CONTINUE →</button></div>
+    </div>
+    <p class="hint" style="margin:14px 0 0">Press <b>Q</b> to end the game. Press <b>Enter</b> to continue to the next slide.</p>
+  </section>
+</div>
+<script>
+/* Add more entries to this array to expand your Bible rebus collection.
+   Each puzzle has an answer and two or three visual/text clues. */
+const puzzles = [
+ {answer:"MATTHEW",type:"Person",clues:[["➗","MATH"],["U","EW"]]},
+ {answer:"RAINBOW",type:"Object",clues:[["🌧️","REN"],["🏹","ARROW"]]},
+ {answer:"ADAM",type:"Person",clues:[["➕","ADD"],["🐹","HAM"]]},
+ {answer:"DANIEL",type:"Person",clues:[["DAN","DAN"],["🐟","EEL"]]},
+ {answer:"SAMSON",type:"Person",clues:[["SAM","SAM"],["☀️","SUN"]]},
+ {answer:"ABRAHAM",type:"Person",clues:[["🅰️","A"],["🐏","RAM"],["🍖","HAM"]]},
+ {answer:"JORDAN",type:"Place",clues:[["🫙","JAR"],["DAN","DAN"]]},
+ {answer:"RED SEA",type:"Place",clues:[["🔴","RED"],["🍵","TEA → SEA"]]},
+ {answer:"BETHLEHEM",type:"Place",clues:[["🛏️","BED (D→TH)"],["🧵","HEM"]]},
+ {answer:"JERICHO",type:"Place",clues:[["🫙","JAR (JER)"],["🔊","ECHO"]]},
+ {answer:"ARK",type:"Object",clues:[["🅰️","A"],["🦘","KANGAROO (K)"]]},
+ {answer:"MANGER",type:"Object",clues:[["👨","MAN"],["⚙️","GEAR (G)"]]},
+ {answer:"CROWN",type:"Object",clues:[["🐄","COW (C)"],["🤚","HAND (N)"]]},
+ {answer:"CROSS",type:"Object",clues:[["➕","CROSS"]]},
+ {answer:"DOVE",type:"Animal",clues:[["🚪","DOOR (D)"],["🦅","EAGLE (E)"]]},
+ {answer:"LAMB",type:"Animal",clues:[["💡","LAMP (P→B)"]]},
+ {answer:"LION",type:"Animal",clues:[["🦁","LION"]]},
+ {answer:"SERPENT",type:"Animal",clues:[["🐍","SNAKE"],["⛺","TENT (T)"]]},
+ {answer:"MOSES",type:"Person",clues:[["🌙","MOON (MO)"],["🧂","SALT (S)"],["🅂","S"]]},
+ {answer:"PETER",type:"Person",clues:[["🅿️","P"],["🍽️","EATER"]]},
+ {answer:"PAUL",type:"Person",clues:[["🐾","PAW"],["🧵","WOOL (UL)"]]},
+ {answer:"RUTH",type:"Person",clues:[["🔤","R"],["🦷","TOOTH (TH)"]]},
+ {answer:"NOAH",type:"Person",clues:[["🚫","NO"],["🅰️","A"],["🏠","HOUSE (H)"]]},
+ {answer:"EVE",type:"Person",clues:[["🌅","EVE / EVENING"]]},
+ {answer:"GOLIATH",type:"Person",clues:[["🥇","GOLD (GOL)"],["🧊","ICE (I)"],["🎩","HAT (ATH)"]]},
+ {answer:"BABEL",type:"Place",clues:[["👶","BABY (BA)"],["🔔","BELL"]]},
+ {answer:"GALILEE",type:"Place",clues:[["🐓","GALL"],["👁️","I"],["🍃","LEAF (LEE)"]]},
+ {answer:"OLIVE",type:"Thing",clues:[["🫒","OLIVE"]]},
+ {answer:"MANNA",type:"Thing",clues:[["👨","MAN"],["🅰️","A"],["🔔","NA (NA)"]]},
+ {answer:"TABLETS",type:"Thing",clues:[["🪑","TABLE"],["🧦","SOCKS (S)"]]},
+ {answer:"SLING",type:"Thing",clues:[["🐍","S"],["🛏️","LING"]]},
+ {answer:"TRUMPET",type:"Thing",clues:[["🚚","TRUCK (TR)"],["🐜","ANT (PET)"]]},
+ {answer:"WHALE",type:"Animal",clues:[["❓","WHAT (WH)"],["🥬","KALE (ALE)"]]},
+ {answer:"RAVEN",type:"Animal",clues:[["🚗","RAVE"],["🖊️","PEN (N)"]]}
+];
+
+const $ = id => document.getElementById(id);
+let teams=[], duration=20, remaining=20, timerId=null, activeTeam=0, round=0, deck=[], currentPuzzle=null, running=false, slideKind="intro";
+function shuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function makeDeck(){deck=shuffle(puzzles);}
+function nextPuzzle(){if(!deck.length)makeDeck();currentPuzzle=deck.pop();}
+function startGame(){
+ teams=[$("team1").value.trim()||"Team 1",$("team2").value.trim()||"Team 2"];
+ duration=Math.max(5,Math.min(300,Number($("seconds").value)||20));
+ $("chip1").textContent=teams[0];$("chip2").textContent=teams[1];
+ $("setup").classList.add("hidden");$("game").classList.remove("hidden");
+ round=0;activeTeam=0;makeDeck();showIntro();
+}
+function stopTimer(){if(timerId){clearInterval(timerId);timerId=null;}}
+function startTimer(){stopTimer();remaining=duration;updateTimer();timerId=setInterval(()=>{remaining--;updateTimer();if(remaining<=0){stopTimer();$("turnInfo").textContent="Time is up! Moving to the next slide…";$("timer").textContent="TIME!";setTimeout(()=>{if(slideKind!=="end")continueGame();},700);}},1000);}
+function updateTimer(){$("timer").textContent=`${String(Math.floor(remaining/60)).padStart(2,"0")}:${String(remaining%60).padStart(2,"0")}`;$("progressBar").style.transform=`scaleX(${Math.max(0,remaining/duration)})`;}
+function setActiveChip(){$("chip1").classList.toggle("active",activeTeam===0);$("chip2").classList.toggle("active",activeTeam===1);}
+function showIntro(){
+ stopTimer();slideKind="intro";setActiveChip();
+ $("stage").innerHTML=`<div class="round-label">BIBLE REBUS CHALLENGE</div><div class="intro-mark">📖 ✦ 🧩</div><div class="intro-title">Get ready!</div><div class="intro-sub">The next puzzle is coming up</div>`;
+ $("turnInfo").textContent="Opening slide — press Continue to begin, or let the countdown run."; startTimer();
+}
+function showPuzzle(){
+ nextPuzzle();slideKind="puzzle";setActiveChip();
+ const clues=currentPuzzle.clues.map((c,i)=>`<div class="clue">${c[0].length<=3 && /[\\p{Emoji}]/u.test(c[0])?`<span class="symbol">${c[0]}</span>`:`<span class="fragment">${c[0]}</span>`}<small>${c[1]}</small></div>${i<currentPuzzle.clues.length-1?'<span class="plus">+</span>':''}`).join("");
+ $("stage").innerHTML=`<div class="round-label">ROUND ${round} • ${currentPuzzle.type.toUpperCase()}</div><div class="team-title">${escapeHtml(teams[activeTeam])}'s turn</div><div class="puzzle">${clues}</div><div class="answer-hint">What Bible ${currentPuzzle.type.toLowerCase()} is hidden in the clues?</div>`;
+ $("turnInfo").textContent=`Puzzle ${round} • ${teams[activeTeam]} is playing`;
+ startTimer();
+}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function continueGame(){
+ if(slideKind==="intro"){round=1;activeTeam=0;showPuzzle();return;}
+ activeTeam=1-activeTeam;
+ if(activeTeam===0)round++;
+ showPuzzle();
+}
+function quitGame(){
+ stopTimer();running=false;slideKind="end";
+ $("stage").innerHTML=`<div class="end-screen"><div class="intro-mark">🏁</div><div class="intro-title">Game ended!</div><p class="intro-sub">Thanks for playing the Bible Rebus Challenge.</p><button class="primary" onclick="backToSetup()">PLAY AGAIN</button></div>`;
+ $("turnInfo").textContent="Press Play Again to set up another game."; $("timer").textContent="END";$("progressBar").style.transform="scaleX(0)";
+}
+function backToSetup(){stopTimer();$("game").classList.add("hidden");$("setup").classList.remove("hidden");}
+$("startBtn").addEventListener("click",startGame);
+$("continueBtn").addEventListener("click",continueGame);
+$("restartBtn").addEventListener("click",()=>{stopTimer();showIntro();});
+document.addEventListener("keydown",e=>{if(!$("game").classList.contains("hidden")){if(e.key.toLowerCase()==="q")quitGame();if(e.key==="Enter"&&slideKind!=="end")continueGame();}});
+</script>
+</body>
+</html>
